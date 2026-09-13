@@ -7,7 +7,24 @@ import json
 import os
 import sys
 import time
-from dotenv import load_dotenv
+def _load_env_file():
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    env_file = os.path.join(base_dir, ".env")
+    if os.path.exists(env_file):
+        with open(env_file, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    k, v = k.strip(), v.strip().strip("'\"")
+                    if k not in os.environ:
+                        os.environ[k] = v
+
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    _load_env_file()
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -24,8 +41,6 @@ from prompts import (
     MAX_ITERATIONS
 )
 from providers import get_llm_provider
-
-load_dotenv()
 
 def load_test_cases():
     """Tải danh sách 5 test cases từ config/test_cases.json hoặc config/test_cases.example.json"""
