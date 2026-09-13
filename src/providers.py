@@ -37,8 +37,42 @@ class MockOfflineProvider(BaseLLMProvider):
     def generate_with_tools(self, prompt: str, tools_schema: List[Dict[str, Any]], system_prompt: str = "") -> Dict[str, Any]:
         prompt_lower = prompt.lower()
         
-        # Mô phỏng nhận diện intent gọi Tool
-        if "sv2026001" in prompt_lower and "đặt lịch" in prompt_lower:
+        # Mô phỏng nhận diện intent gọi Tool cho đề tài VinFast HR
+        if "nv9999999" in prompt_lower:
+            return {
+                "type": "tool_call",
+                "tool_name": "leave_balance_query",
+                "arguments": {"employee_id": "NV9999999"},
+                "thought": "Người dùng muốn tra cứu số ngày phép của nhân viên NV9999999. Tôi sẽ gọi tool leave_balance_query."
+            }
+        elif "tạo đơn" in prompt_lower or ("nghỉ phép" in prompt_lower and ("20/09" in prompt_lower or "2 ngày" in prompt_lower or "lý do" in prompt_lower)):
+            return {
+                "type": "tool_call",
+                "tool_name": "create_leave_request",
+                "arguments": {
+                    "employee_id": "NV2026001",
+                    "leave_type": "annual_leave",
+                    "start_date": "20/09/2026",
+                    "end_date": "21/09/2026",
+                    "reason": "việc cá nhân"
+                },
+                "thought": "Người dùng muốn tạo đơn xin nghỉ phép năm. Tôi sẽ kích hoạt tool create_leave_request với thông tin tương ứng."
+            }
+        elif "nv2026001" in prompt_lower or "ngày phép" in prompt_lower or "phép còn lại" in prompt_lower:
+            return {
+                "type": "tool_call",
+                "tool_name": "leave_balance_query",
+                "arguments": {"employee_id": "NV2026001"},
+                "thought": "Người dùng muốn tra cứu số ngày phép còn lại của nhân viên NV2026001. Tôi sẽ gọi tool leave_balance_query."
+            }
+        elif "chính sách" in prompt_lower or "nhân sự" in prompt_lower:
+            return {
+                "type": "text",
+                "content": "VinFast áp dụng chính sách nhân sự chuẩn mực: Chế độ làm việc 40 giờ/tuần, 12 ngày phép năm hưởng nguyên lương, chế độ bảo hiểm xã hội, bảo hiểm y tế và bảo hiểm sức khỏe nâng cao cho CBNV.",
+                "thought": "Câu hỏi giới thiệu chính sách chung, trả lời trực tiếp từ System Prompt mà không cần gọi Tool."
+            }
+        # Tương thích chủ đề VinUni ban đầu
+        elif "sv2026001" in prompt_lower and "đặt lịch" in prompt_lower:
             return {
                 "type": "tool_call",
                 "tool_name": "schedule_appointment",
@@ -55,8 +89,8 @@ class MockOfflineProvider(BaseLLMProvider):
         else:
             return {
                 "type": "text",
-                "content": f"[Mock Agent Response]: Xin chào! Quy chế học vụ VinUni yêu cầu sinh viên tích lũy tối thiểu 120 tín chỉ và duy trì GPA trên 2.0 để tốt nghiệp.",
-                "thought": "Câu hỏi chung về quy chế học vụ, trả lời trực tiếp không cần gọi Tool."
+                "content": f"[Mock Agent Response]: Xin chào! Tôi đã nhận được yêu cầu '{prompt}'. Tôi là Trợ lý AI sẵn sàng hỗ trợ giải đáp và tra cứu.",
+                "thought": "Câu hỏi thông thường, trả lời trực tiếp không cần gọi Tool."
             }
 
 

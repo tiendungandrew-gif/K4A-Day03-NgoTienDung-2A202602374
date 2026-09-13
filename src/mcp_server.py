@@ -31,15 +31,22 @@ class MCPAcademicServer:
         [TASK 2.1] HỌC VIÊN HOÀN THIỆN HÀM THỰC THI TOOL TRÊN MCP SERVER
         Thực thi request gọi Tool theo chuẩn MCP JSON-RPC
         """
-        # --------------------------------------------------------------------------
-        # TODO 2.1: HỌC VIÊN HOÀN THIỆN HÀM GỌI TOOL CHUẨN MCP JSON-RPC
-        # 🎯 YÊU CẦU THỰC THI THUẬT TOÁN:
         # 1. Gọi hàm dispatch_tool_call(tool_name, arguments) để lấy chuỗi JSON kết quả từ Tool Router.
+        raw_result = dispatch_tool_call(tool_name, arguments)
+
         # 2. Chuyển đổi chuỗi JSON kết quả thành Python Dictionary (dùng json.loads).
+        try:
+            content = json.loads(raw_result)
+        except Exception:
+            content = {"status": "ERROR", "raw": raw_result}
+
         # 3. Đóng gói phản hồi và trả về Dict theo đúng chuẩn giao thức MCP JSON-RPC 2.0:
-        #    - Các trường bắt buộc: "jsonrpc": "2.0", "server": self.server_name, "tool": tool_name, "result": content
-        # --------------------------------------------------------------------------
-        return {}
+        return {
+            "jsonrpc": "2.0",
+            "server": self.server_name,
+            "tool": tool_name,
+            "result": content
+        }
 
 
 if __name__ == "__main__":
@@ -53,16 +60,19 @@ if __name__ == "__main__":
     print(f"📦 Số lượng Tools công bố: {len(tools)}")
     
     # Kiểm tra trạng thái TODO 1.2 (Tool Schema)
-    sched_tool = next((t for t in tools if t.get("name") == "schedule_appointment"), None)
+    sched_tool = next((t for t in tools if t.get("name") in ["schedule_appointment", "create_leave_request"]), None)
     if sched_tool and not sched_tool.get("parameters", {}).get("properties"):
-        print("⏳ [TODO 1.2]: Tool 'schedule_appointment' chưa được định nghĩa properties trong 'src/tools.py'.")
+        print(f"⏳ [TODO 1.2]: Tool '{sched_tool.get('name')}' chưa được định nghĩa properties trong 'src/tools.py'.")
     else:
-        print("✅ [TODO 1.2]: Tool 'schedule_appointment' đã có schema đầy đủ.")
+        tool_name_display = sched_tool.get("name") if sched_tool else "Tool hành động"
+        print(f"✅ [TODO 1.2]: Tool '{tool_name_display}' đã có schema đầy đủ.")
 
     # Kiểm tra trạng thái TODO 2.1 (call_tool)
-    test_result = server.call_tool("academic_query", {"student_id": "SV2026001"})
+    test_tool = "leave_balance_query" if any(t.get("name") == "leave_balance_query" for t in tools) else "academic_query"
+    test_args = {"employee_id": "NV2026001"} if test_tool == "leave_balance_query" else {"student_id": "SV2026001"}
+    test_result = server.call_tool(test_tool, test_args)
     if not test_result:
         print("⏳ [TODO 2.1]: Hàm call_tool() đang trả về rỗng. Học viên hãy hoàn thiện TODO 2.1 trong 'src/mcp_server.py'!")
     else:
-        print(f"✅ [TODO 2.1]: Test dispatch tool 'academic_query' thành công:")
+        print(f"✅ [TODO 2.1]: Test dispatch tool '{test_tool}' thành công:")
         print(f"   Phản hồi JSON-RPC: {json.dumps(test_result, ensure_ascii=False)}")

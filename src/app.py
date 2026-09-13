@@ -119,19 +119,29 @@ def run_react_agent(user_query: str, provider, mcp_server: MCPAcademicServer) ->
                 
                 # Tổng hợp Final Answer từ kết quả Observation thực tế
                 if obs_data.get("status") == "SUCCESS":
-                    if "data" in obs_data:
+                    if "employee_id" in obs_data and "data" in obs_data:
+                        d = obs_data["data"]
+                        lb = d.get("leave_balance", {})
+                        final_answer = (
+                            f"Kết quả tra cứu nhân viên {obs_data['employee_id']} ({d.get('full_name', '')}) - "
+                            f"Phòng ban: {d.get('department', '')}. Số ngày phép còn lại: {lb.get('remaining_leave', 0)} ngày "
+                            f"(Đã dùng {lb.get('used_leave', 0)}/{lb.get('annual_leave', 0)} ngày phép năm)."
+                        )
+                    elif "message" in obs_data:
+                        final_answer = obs_data["message"]
+                    elif "data" in obs_data:
                         d = obs_data["data"]
                         final_answer = (
                             f"Kết quả tra cứu cho sinh viên {obs_data.get('student_id', '')} ({d.get('full_name', '')}): "
                             f"Lớp {d.get('class', '')}, GPA: {d.get('gpa', '')}, Email: {d.get('email', '')}, "
                             f"Trạng thái: {d.get('status', '')}, Cố vấn: {d.get('advisor', '')}."
                         )
-                    elif "message" in obs_data:
-                        final_answer = obs_data["message"]
                     else:
                         final_answer = f"Đã hoàn tất xử lý qua MCP Server: {json.dumps(obs_data, ensure_ascii=False)}"
                 elif obs_data.get("status") == "NOT_FOUND":
-                    final_answer = obs_data.get("message", "Không tìm thấy thông tin sinh viên yêu cầu.")
+                    final_answer = obs_data.get("message", "Không tìm thấy thông tin yêu cầu.")
+                elif obs_data.get("status") == "INSUFFICIENT_LEAVE":
+                    final_answer = obs_data.get("message", "Số ngày phép hiện tại không đủ để thực hiện yêu cầu.")
                 else:
                     final_answer = f"Phản hồi từ công cụ: {json.dumps(obs_data, ensure_ascii=False)}"
             
@@ -177,15 +187,15 @@ if __name__ == "__main__":
     print(f"✅ Đã tải thành công {len(tests)} Test Cases thử nghiệm.\n")
     
     if "--interactive" in sys.argv:
-        print("🎮 [INTERACTIVE MODE] Trò chuyện trực tiếp với ReAct Agent:")
+        print("🎮 [INTERACTIVE MODE] Trò chuyện trực tiếp với ReAct Agent (VinFast HR Assistant):")
         print("💡 Gợi ý câu hỏi thử nghiệm:")
-        print("   - Câu hỏi chung: 'Quy chế học vụ VinUni yêu cầu bao nhiêu tín chỉ?'")
-        print("   - Tra cứu học vụ: 'Hãy tra cứu thông tin học vụ của sinh viên SV2026001'")
-        print("   - Đặt lịch hẹn: 'Đặt lịch hẹn tư vấn cho SV2026001 vào 14:00 ngày 15/09/2026'")
+        print("   - Câu hỏi chung: 'Bạn có thể giới thiệu các chính sách nhân sự cơ bản của VinFast không?'")
+        print("   - Tra cứu ngày phép: 'Hãy tra cứu số ngày phép còn lại của nhân viên có mã NV2026001.'")
+        print("   - Tạo đơn nghỉ phép: 'Tôi muốn tạo đơn xin nghỉ phép năm 2 ngày, từ ngày 20/09/2026 đến ngày 21/09/2026, lý do việc cá nhân.'")
         print("   - Gõ 'exit' hoặc 'quit' để kết thúc phiên trò chuyện.\n")
         while True:
             try:
-                user_input = input("👤 Sinh viên hỏi: ").strip()
+                user_input = input("👤 Nhân viên hỏi: ").strip()
                 if not user_input or user_input.lower() in ["exit", "quit"]:
                     print("👋 Tạm biệt! Kết thúc phiên trò chuyện.")
                     break
@@ -227,7 +237,7 @@ if __name__ == "__main__":
         print("  2. Chạy toàn bộ Test Cases:    python src/app.py --all\n")
         
         sample_query = tests[1]["question"]
-        print(f"--- 🏁 DEMO CHẠY THỬ 1 TEST CASE MẪU (TC02: Tra cứu học vụ) ---")
+        print(f"--- 🏁 DEMO CHẠY THỬ 1 TEST CASE MẪU (TC02: Tra cứu ngày phép) ---")
         logs = run_react_agent(sample_query, provider, mcp_server)
         save_waterfall_trace(logs)
         print("\n💡 Hãy thử ngay lệnh: python src/app.py --interactive để chat trực tiếp!")

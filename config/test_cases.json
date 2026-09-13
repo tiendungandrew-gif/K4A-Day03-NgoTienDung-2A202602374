@@ -1,0 +1,37 @@
+[
+  {
+    "id": "TC01",
+    "type": "direct_query",
+    "question": "Bạn có thể giới thiệu các chính sách nhân sự cơ bản của VinFast không?",
+    "expected_behavior": "Chatbot trả lời trực tiếp từ System Prompt hoặc Knowledge Base, không cần gọi Tool nếu câu hỏi chỉ yêu cầu giới thiệu thông tin chung.",
+    "complexity": "Low"
+  },
+  {
+    "id": "TC02",
+    "type": "single_tool_query",
+    "question": "Hãy tra cứu số ngày phép còn lại của nhân viên có mã NV2026001.",
+    "expected_behavior": "Agent nhận diện nhu cầu tra cứu ngày phép, tự động phát sinh Tool Call 'leave_balance_query' với mã nhân viên NV2026001 và trả về kết quả chính xác từ hệ thống HR.",
+    "complexity": "Medium"
+  },
+  {
+    "id": "TC03",
+    "type": "leave_request_creation",
+    "question": "Tôi muốn tạo đơn xin nghỉ phép năm 2 ngày, từ ngày 20/09/2026 đến ngày 21/09/2026, lý do việc cá nhân.",
+    "expected_behavior": "Agent nhận diện yêu cầu tạo đơn, kiểm tra thông tin bắt buộc và số ngày phép, sau đó phát sinh Tool Call 'create_leave_request' với đúng loại nghỉ, thời gian và lý do. Agent phải yêu cầu xác nhận trước khi tạo đơn nếu quy trình yêu cầu.",
+    "complexity": "Medium"
+  },
+  {
+    "id": "TC04",
+    "type": "multi_step_reasoning",
+    "question": "Tôi muốn nghỉ phép 3 ngày từ 20/09/2026 đến 22/09/2026. Hãy kiểm tra số ngày phép còn lại, nếu đủ thì hướng dẫn tôi tạo đơn xin nghỉ phép.",
+    "expected_behavior": "Agent thực hiện chuỗi suy luận ReAct đa bước: Tra cứu số ngày phép bằng Tool Call 'leave_balance_query' -> kiểm tra số ngày phép có đủ hay không -> nếu đủ thì hướng dẫn hoặc tiến hành bước tạo đơn theo quy trình. Nếu không đủ, Agent phải thông báo và đề xuất phương án phù hợp, không tự tạo đơn sai điều kiện.",
+    "complexity": "High"
+  },
+  {
+    "id": "TC05",
+    "type": "edge_case_handling",
+    "question": "Hãy tra cứu số ngày phép còn lại của nhân viên có mã NV9999999.",
+    "expected_behavior": "Agent nhận kết quả NOT_FOUND từ Tool 'leave_balance_query' và đưa ra phản hồi lịch sự, chính xác, thông báo không tìm thấy thông tin nhân viên, không bịa đặt số ngày phép.",
+    "complexity": "Medium"
+  }
+]
