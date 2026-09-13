@@ -1,10 +1,79 @@
 [
   {
     "step": 1,
-    "query": "NV202600`",
+    "query": "Bạn có thể giới thiệu các chính sách nhân sự cơ bản của VinFast không?",
     "action_type": "FINAL_ANSWER",
     "thought": "Gemini phản hồi trực tiếp bằng văn bản (không cần gọi công cụ).",
-    "output": "Xin chào! Có vẻ như câu lệnh của bạn chưa hoàn chỉnh. \n\nBạn muốn tôi hỗ trợ thông tin gì cho mã nhân viên này? Tôi có thể giúp bạn:\n1. **Tra cứu số ngày phép còn lại** (Ví dụ: Tra cứu ngày phép cho NV2026001).\n2. **Tạo đơn xin nghỉ phép** (Xin nghỉ phép năm, nghỉ không lương,...).\n3. **Tra cứu chính sách bảo hiểm** (BHXH, BHYT, Bảo hiểm sức khỏe VinFast).\n\nVui lòng cung cấp thêm thông tin hoặc mã nhân viên đầy đủ và yêu cầu chi tiết để tôi có thể hỗ trợ bạn chính xác nhất nhé!",
-    "latency_ms": 3650.99
+    "output": "Chào bạn, VinFast luôn chú trọng xây dựng môi trường làm việc chuyên nghiệp, đẳng cấp và giàu cơ hội phát triển. Dưới đây là các nhóm **chính sách nhân sự cơ bản** tại VinFast:\n\n1. **Chế độ Lương, Thưởng & Đãi ngộ:**\n   - **Thương lượng & Cạnh tranh:** Thu nhập hấp dẫn, tương xứng với năng lực và đóng góp của nhân viên.\n   - **Thưởng hiệu quả công việc:** Đánh giá định kỳ (KPIs) và thưởng theo kết quả kinh doanh của Công ty cũng như thành tích cá nhân.\n   - **Chính sách ưu đãi VinGroup:** Ưu đãi đặc quyền khi sử dụng các dịch vụ, sản phẩm trong hệ sinh thái VinGroup (VinFast, Vinhomes, VinMec, VinSchool, v.v.).\n\n2. **Chính sách Bảo hiểm & Chăm sóc sức khỏe:**\n   - **Bảo hiểm bắt buộc:** Tham gia đầy đủ BHXH, BHYT, BHTN theo đúng quy định của Pháp luật Lao động Việt Nam.\n   - **Bảo hiểm sức khỏe cao cấp:** Bảo hiểm chăm sóc sức khỏe riêng biệt (Bảo hiểm Bảo Việt/PVI/Sức khỏe VinFast) dành cho cán bộ nhân viên và thân nhân tùy theo cấp bậc.\n\n3. **Thời giờ làm việc & Nghỉ phép:**\n   - **Phép năm (Annual Leave):** Hưởng đầy đủ chế độ phép năm theo quy định và chính sách thâm niên của Tập đoàn.\n   - **Nghỉ lễ/Tết, chế độ hiếu hỷ, thai sản:** Đảm bảo đầy đủ theo Luật Lao động và các phúc lợi bổ sung từ công ty.\n\n4. **Đào tạo & Phát triển sự nghiệp:**\n   - Các chương trình hội nhập dành cho nhân sự mới.\n   - Khóa đào tạo chuyên môn, kỹ năng mềm và quản lý lãnh đạo.\n   - Lộ trình thăng tiến rõ ràng, ưu tiên bổ nhiệm nội bộ.\n\n---\n*Nếu bạn muốn tra cứu cụ thể về **số ngày phép còn lại**, **chính sách bảo hiểm chi tiết**, hoặc **tạo đơn xin nghỉ phép**, bạn chỉ cần cung cấp thông tin (như Mã nhân viên) để tôi hỗ trợ nhé!*",
+    "latency_ms": 6941.04
+  },
+  {
+    "step": 1,
+    "query": "Hãy tra cứu số ngày phép còn lại của nhân viên có mã NV2026001.",
+    "action_type": "TOOL_EXECUTION",
+    "tool_name": "leave_balance_query",
+    "arguments": {
+      "employee_id": "NV2026001"
+    },
+    "observation": {
+      "status": "SUCCESS",
+      "employee_id": "NV2026001",
+      "data": {
+        "full_name": "Nguyễn Văn An",
+        "department": "AI Engineering",
+        "leave_balance": {
+          "annual_leave": 12,
+          "used_leave": 4,
+          "remaining_leave": 8
+        }
+      }
+    },
+    "latency_ms": 2496.59
+  },
+  {
+    "step": 2,
+    "query": "Hãy tra cứu số ngày phép còn lại của nhân viên có mã NV2026001.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Tổng hợp kết quả từ MCP Server thành công.",
+    "output": "Kết quả tra cứu nhân viên NV2026001 (Nguyễn Văn An) - Phòng ban: AI Engineering. Số ngày phép còn lại: 8 ngày (Đã dùng 4/12 ngày phép năm).",
+    "latency_ms": 10.0
+  },
+  {
+    "step": 1,
+    "query": "Tôi muốn tạo đơn xin nghỉ phép năm 2 ngày, từ ngày 20/09/2026 đến ngày 21/09/2026, lý do việc cá nhân.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Gemini phản hồi trực tiếp bằng văn bản (không cần gọi công cụ).",
+    "output": "Để tạo đơn xin nghỉ phép, tôi cần thông tin **Mã nhân viên** của bạn (ví dụ: NV2026001). \n\nVui lòng cung cấp mã nhân viên để tôi có thể hỗ trợ tạo đơn xin nghỉ phép năm từ ngày **20/09/2026** đến ngày **21/09/2026** với lý do **việc cá nhân**.",
+    "latency_ms": 3861.62
+  },
+  {
+    "step": 1,
+    "query": "Tôi muốn nghỉ phép 3 ngày từ 20/09/2026 đến 22/09/2026. Hãy kiểm tra số ngày phép còn lại, nếu đủ thì hướng dẫn tôi tạo đơn xin nghỉ phép.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Gemini phản hồi trực tiếp bằng văn bản (không cần gọi công cụ).",
+    "output": "Để tôi có thể kiểm tra số ngày phép còn lại và hỗ trợ bạn tạo đơn xin nghỉ phép, vui lòng cung cấp **Mã nhân viên** của bạn (ví dụ: `NV2026001`).",
+    "latency_ms": 3178.34
+  },
+  {
+    "step": 1,
+    "query": "Hãy tra cứu số ngày phép còn lại của nhân viên có mã NV9999999.",
+    "action_type": "TOOL_EXECUTION",
+    "tool_name": "leave_balance_query",
+    "arguments": {
+      "employee_id": "NV9999999"
+    },
+    "observation": {
+      "status": "NOT_FOUND",
+      "message": "Không tìm thấy dữ liệu nhân viên có mã 'NV9999999'"
+    },
+    "latency_ms": 2283.43
+  },
+  {
+    "step": 2,
+    "query": "Hãy tra cứu số ngày phép còn lại của nhân viên có mã NV9999999.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Tổng hợp kết quả từ MCP Server thành công.",
+    "output": "Không tìm thấy dữ liệu nhân viên có mã 'NV9999999'",
+    "latency_ms": 10.0
   }
 ]
